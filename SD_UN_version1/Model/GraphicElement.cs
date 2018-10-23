@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using static SD_UN_version1.Model.Shapes.ShapeAnchor;
 
@@ -17,9 +18,9 @@ namespace SD_UN_version1.Model
     {
         public string Name { get; set; }
         public string Text { get; set; }
-        public System.Drawing.Font TextFont { get; set; }
-        public Color TextColor { get; set; }
-        public ContentAlignment TextAlign { get; set; }
+        //public System.Drawing.Font TextFont { get; set; }
+       // public Color TextColor { get; set; }
+        //public ContentAlignment TextAlign { get; set; }
         public BorderShape DisplayRectangle { get; set; }
         // TODO: Text location - left, top, right, middle, bottom
 
@@ -32,21 +33,24 @@ namespace SD_UN_version1.Model
         protected bool HasCenterConnections { get; set; }
         protected bool HasLeftRightConnections { get; set; }
         protected bool HasTopBottomConnections { get; set; }
-
-        protected Bitmap background;
-        protected System.Windows.Shapes.Rectangle backgroundRectangle;
-        protected Pen selectionPen;
-        protected Pen altSelectionPen;
-        protected Pen tagPen;
-        protected Pen altTagPen;
-        protected Pen anchorPen = new Pen(Color.Black);
-        protected Pen connectionPointPen = new Pen(Color.Blue);
-        protected SolidBrush anchorBrush = new SolidBrush(Color.Black);
+        public bool isSelected { get; set; }
+        protected SolidColorBrush selectionPen;
+        /* protected Bitmap background;
+         protected System.Windows.Shapes.Rectangle backgroundRectangle;
+         protected Pen selectionPen;
+         protected Pen altSelectionPen;
+         protected Pen tagPen;
+         protected Pen altTagPen;
+         protected Pen anchorPen = new Pen(Color.Black);
+         protected Pen connectionPointPen = new Pen(Color.Blue);
+         protected SolidBrush anchorBrush = new SolidBrush(Color.Black);*/
         protected int anchorWidthHeight = 6;        // TODO: Make const?
         public Canvas canvas;
 
         protected bool disposed;
         protected bool removed;
+        public virtual void UpdatePath() { }
+        public virtual void UpdateProperties() { }
         public GraphicElement(Canvas canvas)
         {
             this.canvas = canvas;
@@ -58,41 +62,68 @@ namespace SD_UN_version1.Model
             HasCornerConnections = true;
             HasLeftRightConnections = false;
             HasTopBottomConnections = false;
+            selectionPen = new SolidColorBrush(Colors.Red);
         }
         public virtual List<ShapeAnchor> GetAnchors()
         {
+            // draw anchors 
             List<ShapeAnchor> anchors = new List<ShapeAnchor>();
             AnchorBox r;
             int anchorSize = 6;
-            if (HasCornerAnchors)
+            if (HasCornerAnchors) // tai cac canh
             {
+                Point newPoint = new Point();
+                newPoint = DisplayRectangle.TopLeft();
                 r =new AnchorBox(DisplayRectangle.TopLeft(), anchorSize);
                 anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));
-                r = new AnchorBox(DisplayRectangle.TopRight(), anchorSize);
+                newPoint = DisplayRectangle.TopRight();
+                newPoint.Offset(-anchorWidthHeight, 0);
+                r = new AnchorBox(newPoint, anchorSize);
                 anchors.Add(new ShapeAnchor(GripType.TopRight, r, Cursors.SizeNESW));
-                r = new AnchorBox(DisplayRectangle.BottomLeft(), anchorSize);
+                newPoint = DisplayRectangle.BottomLeft();
+                newPoint.Offset(0, -anchorWidthHeight);
+                r = new AnchorBox(newPoint, anchorSize);
                 anchors.Add(new ShapeAnchor(GripType.BottomLeft, r, Cursors.SizeNESW));
-                r = new AnchorBox(DisplayRectangle.BottomRight(), anchorSize);
+                newPoint = DisplayRectangle.BottomRight();
+                newPoint.Offset(-anchorWidthHeight, -anchorWidthHeight);
+                r = new AnchorBox(newPoint, anchorSize);
                 anchors.Add(new ShapeAnchor(GripType.BottomRight, r, Cursors.SizeNWSE));
             }
 
-            if (HasCenterAnchors || HasLeftRightAnchors)
+            if (HasCenterAnchors || HasLeftRightAnchors) // tai trai va phai
             {
-              /*  r = ExtensionMethod.AnchorBox(DisplayRectangle.LeftMiddle(), anchorSize);
+                Point newPoint = DisplayRectangle.LeftMiddle();
+                newPoint.Offset(0, -anchorWidthHeight / 2);
+                r = new AnchorBox(newPoint, anchorSize);
                 anchors.Add(new ShapeAnchor(GripType.LeftMiddle, r, Cursors.SizeWE));
-                r = ExtensionMethod.AnchorBox(DisplayRectangle.RightMiddle(), anchorSize);
-                anchors.Add(new ShapeAnchor(GripType.RightMiddle, r, Cursors.SizeWE));*/
+                newPoint = DisplayRectangle.RightMiddle();
+                newPoint.Offset(0, -anchorWidthHeight / 2);
+                r = new AnchorBox(newPoint, anchorSize);
+                anchors.Add(new ShapeAnchor(GripType.RightMiddle, r, Cursors.SizeWE));
             }
 
-            if (HasCenterAnchors || HasTopBottomAnchors)
+            if (HasCenterAnchors || HasTopBottomAnchors) // tai vi tri tren va duoi
             {
-               /* r = ExtensionMethod.AnchorBox(DisplayRectangle.TopMiddle(), anchorSize);
+                Point newPoint = new Point();
+                newPoint = DisplayRectangle.TopMiddle();
+                newPoint.Offset(-anchorWidthHeight / 2, 0);
+                r = new AnchorBox(newPoint, anchorSize);
                 anchors.Add(new ShapeAnchor(GripType.TopMiddle, r, Cursors.SizeNS));
-                r = ExtensionMethod.AnchorBox(DisplayRectangle.BottomMiddle(), anchorSize);
-                anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r, Cursors.SizeNS));*/
+                newPoint = DisplayRectangle.BottomMiddle();
+                newPoint.Offset(-anchorWidthHeight / 2, -anchorWidthHeight);
+                r = new AnchorBox(newPoint, anchorSize);
+                anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r, Cursors.SizeNS));
             }
 
             return anchors;
+        }
+        public virtual bool IsSelectable(Point p)
+        {
+            return DisplayRectangle.Contain(p);
+        }
+        public virtual BorderShape DefaultRectangle()
+        {
+            return new BorderShape(20, 20, 60, 60);
         }
         public virtual void DrawAnchors()
         {
@@ -117,15 +148,21 @@ namespace SD_UN_version1.Model
         {
             this.canvas.Children.Add(element);
         }
-        public virtual void UpdateProperties()
-        {
-
-        }
         public virtual void Draw()
         {
 
         }
-
+        protected virtual void DrawSelection()
+        {
+            if (!isSelected)
+            {
+                DisplayRectangle.BorderBrush = selectionPen;
+            }
+            else
+            {
+                DisplayRectangle.BorderBrush = selectionPen;
+            }
+        }
         public virtual System.Windows.Point GetLocation()
         {
             return new System.Windows.Point(Canvas.GetLeft(DisplayRectangle),Canvas.GetTop(DisplayRectangle));

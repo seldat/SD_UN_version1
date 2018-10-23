@@ -18,6 +18,8 @@ namespace SD_UN_version1.Connectors
     {
         public AvailableLineCap StartCap { get; set; }
         public AvailableLineCap EndCap { get; set; }
+       // public override bool IsConnector { get { return true; } }
+        public bool ShowConnectorAsSelected { get; set; }
         public Connector(Canvas canvas):base(canvas)
         {
 

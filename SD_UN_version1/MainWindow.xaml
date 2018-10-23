@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SD_UN_version1"
         mc:Ignorable="d"
+         xmlns:wpg="clr-namespace:System.Windows.Controls"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Canvas Name="canvas" HorizontalAlignment="Left" Height="330" Margin="84,55,0,0" VerticalAlignment="Top" Width="574" RenderTransformOrigin="0.502,0.545">
-            <Border Name="b2" BorderBrush="Black" BorderThickness="3" Height="100" Canvas.Left="241" Canvas.Top="196" Width="100"/>
+        <Canvas Name="canvas" Background="Azure" HorizontalAlignment="Left" Height="298" Margin="50,70,0,0" VerticalAlignment="Top" Width="398" RenderTransformOrigin="0.502,0.545" MouseMove="canvas_MouseMove">
         </Canvas>
-
+        <wpg:WpfPropertyGrid x:Name="PropertyGrid1" 
+            Margin="548,51,32,90" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+            HelpVisible="{Binding ElementName=ShowDescrip, Path=IsChecked}" 
+            ToolbarVisible="{Binding ElementName=ShowToolbar, Path=IsChecked}"
+            PropertySort="{Binding ElementName=ComboSort, Path=SelectedItem}" />
     </Grid>
 </Window>

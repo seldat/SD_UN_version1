@@ -36,6 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Core.Presentation" />
+    <Reference Include="System.Activities.Presentation" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +58,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="InterfaceServices\IPropertyObject.cs" />
+    <Compile Include="Model\ShapeProperties\ElementProperties.cs" />
+    <Compile Include="Model\ShapeProperties\LineProperties.cs" />
+    <Compile Include="Model\ShapeProperties\WpfPropertyGrid.cs" />
+    <Compile Include="Model\Connectors\DiagonalConnector.cs" />
+    <Compile Include="Model\Connectors\DynamicConnector.cs" />
+    <Compile Include="Model\Connectors\DynamicConnectorVH.cs" />
+    <Compile Include="Model\Connectors\DynamicConnectorHVH.cs" />
+    <Compile Include="Model\Connectors\DynamicConnectorVHV.cs" />
+    <Compile Include="Services\Constants.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -72,14 +85,15 @@
     <Compile Include="Model\Connectors\Connector.cs" />
     <Compile Include="Model\ExtensionMethod.cs" />
     <Compile Include="Model\GraphicElement.cs" />
-    <Compile Include="Model\InterfaceServices\IGraphicElement.cs" />
+    <Compile Include="InterfaceServices\IGraphicElement.cs" />
     <Compile Include="Model\MouseControllerService\MouseController.cs" />
     <Compile Include="Model\ServiceInterfaces\Interfaces.cs" />
     <Compile Include="Model\Shapes\AnchorBox.cs" />
     <Compile Include="Model\Shapes\BorderShape.cs" />
     <Compile Include="Model\Shapes\Box.cs" />
+    <Compile Include="Model\Shapes\CappedLine.cs" />
     <Compile Include="Model\Shapes\HorizontalLine.cs" />
-    <Compile Include="Model\Shapes\Lines.cs" />
+    <Compile Include="Model\Shapes\LineShape.cs" />
     <Compile Include="Model\Shapes\ShapeAnchor.cs" />
     <Compile Include="Model\Shapes\VerticalLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -110,6 +124,14 @@
   <ItemGroup>
     <Folder Include="Connector\" />
     <Folder Include="Shape\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data">
+      <Version>18.1.6</Version>
+    </PackageReference>
+    <PackageReference Include="DevExpressMvvm">
+      <Version>18.1.3</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

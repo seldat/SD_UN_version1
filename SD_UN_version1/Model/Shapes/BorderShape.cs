@@ -11,6 +11,7 @@ namespace SD_UN_version1.Model.Shapes
 {
     public class BorderShape:Border
     {
+        public const int BOX_SIZE_ANCHOR = 3;
         public Point location { get; set; }
         public int size { get; set; }
         public Canvas canvas;
@@ -23,8 +24,9 @@ namespace SD_UN_version1.Model.Shapes
             this.location = location;
             this.BorderThickness = new Thickness(1);
             this.BorderBrush = new SolidColorBrush(Colors.Black);
+            
         }
-        public BorderShape(Point location,int w, int h)
+        public BorderShape(Point location,double w, double h)
         {
             this.Width = w;
             this.Height = h;
@@ -35,7 +37,7 @@ namespace SD_UN_version1.Model.Shapes
             this.BorderThickness = new Thickness(1);
             this.BorderBrush = new SolidColorBrush(Colors.Black);
         }
-        public BorderShape(int x,int y, int w, int h)
+        public BorderShape(double x,double y, double w, double h)
         {
             this.Width = w;
             this.Height = h;
@@ -57,16 +59,16 @@ namespace SD_UN_version1.Model.Shapes
         }
         public Point TopMiddle()
         {
-            return new Point(location.X + this.Width / 2, location.Y);
+            return new Point(location.X + this.Width / 2 , location.Y);
         }
         public Point LeftMiddle()
         {
-            return new Point(location.X, location.Y + this.Height / 2);
+            return new Point(location.X, location.Y + this.Height / 2 );
         }
 
         public Point RightMiddle()
         {
-            return new Point(location.X + this.Width, location.Y+ this.Height / 2);
+            return new Point(location.X + this.Width , location.Y+ this.Height / 2);
         }
         public Point BottomLeft()
         {
@@ -78,7 +80,12 @@ namespace SD_UN_version1.Model.Shapes
         }
         public Point BottomMiddle()
         {
-            return new Point(location.X + this.Width / 2, location.Y + this.Height);
+            return new Point(location.X + this.Width / 2 , location.Y + this.Height);
+        }
+        public bool Contain(Point pInside)
+        {
+            Point[] pointCollection = new Point[4] { TopLeft(),TopRight(),BottomRight(),BottomLeft() };
+            return ExtensionMethod.IsInPolygon(pointCollection, pInside);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SD_UN_version1.Model.Shapes;
+﻿using SD_UN_version1.Model.Connectors;
+using SD_UN_version1.Model.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +27,19 @@ namespace SD_UN_version1
             InitializeComponent();
             get();
         }
+        BorderShape bp;
         public void get()
         {
-            Box p = new Box(canvas) { DisplayRectangle= new BorderShape(new Point(20,20) ) };
-            p.Draw();
-            p.DrawAnchors();
+           //  DiagonalConnector p = new DiagonalConnector(canvas,new Point(20,120), new Point(20+50, 120+50));
+           bp = new BorderShape(new Point(20, 20));
+            canvas.Children.Add(bp);
+        }
+
+        private void canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point p = Mouse.GetPosition(canvas);
+            //Console.WriteLine("" + p.ToString());
+            Console.WriteLine(bp.Contain(p));
         }
     }
 }
