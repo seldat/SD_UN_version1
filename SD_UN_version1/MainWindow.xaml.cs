@@ -1,4 +1,5 @@
-﻿using SD_UN_version1.Model.Connectors;
+﻿using SD_UN_version1.Controller;
+using SD_UN_version1.Model.Connectors;
 using SD_UN_version1.Model.Shapes;
 using System;
 using System.Collections.Generic;
@@ -22,24 +23,24 @@ namespace SD_UN_version1
     /// </summary>
     public partial class MainWindow : Window
     {
+        MouseController pmouse;
         public MainWindow()
         {
             InitializeComponent();
+            pmouse = new MouseController(canvas);
             get();
         }
-        BorderShape bp;
+        Box bp;
         public void get()
         {
            //  DiagonalConnector p = new DiagonalConnector(canvas,new Point(20,120), new Point(20+50, 120+50));
-           bp = new BorderShape(new Point(20, 20));
-            canvas.Children.Add(bp);
+            
         }
 
-        private void canvas_MouseMove(object sender, MouseEventArgs e)
+        private void canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Point p = Mouse.GetPosition(canvas);
-            //Console.WriteLine("" + p.ToString());
-            Console.WriteLine(bp.Contain(p));
+            
+          
         }
     }
 }

@@ -8,7 +8,7 @@
          xmlns:wpg="clr-namespace:System.Windows.Controls"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Canvas Name="canvas" Background="Azure" HorizontalAlignment="Left" Height="298" Margin="50,70,0,0" VerticalAlignment="Top" Width="398" RenderTransformOrigin="0.502,0.545" MouseMove="canvas_MouseMove">
+        <Canvas Name="canvas" Background="Azure" HorizontalAlignment="Left" Height="298" Margin="50,70,0,0" VerticalAlignment="Top" Width="398" RenderTransformOrigin="0.502,0.545" MouseLeftButtonDown="canvas_MouseLeftButtonDown">
         </Canvas>
         <wpg:WpfPropertyGrid x:Name="PropertyGrid1" 
             Margin="548,51,32,90" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 

@@ -34,6 +34,7 @@ namespace SD_UN_version1.Model
         protected bool HasLeftRightConnections { get; set; }
         protected bool HasTopBottomConnections { get; set; }
         public bool isSelected { get; set; }
+        public GraphicElement Parent { get; set; }
         protected SolidColorBrush selectionPen;
         /* protected Bitmap background;
          protected System.Windows.Shapes.Rectangle backgroundRectangle;
@@ -151,6 +152,10 @@ namespace SD_UN_version1.Model
         public virtual void Draw()
         {
 
+        }
+        public virtual void Move(Point delta)
+        {
+            DisplayRectangle.Move(delta);
         }
         protected virtual void DrawSelection()
         {

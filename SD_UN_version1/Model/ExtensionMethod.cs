@@ -12,6 +12,10 @@ namespace SD_UN_version1.Model
 {
     public static class ExtensionMethod
     {
+        public static Point Delta(this Point p, Point p2)
+        {
+            return new Point(p.X - p2.X, p.Y - p2.Y);
+        }
         public static bool IsInPolygon(Point[] poly, Point p)
         {
             Point p1, p2;

@@ -58,6 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controller\BaseController.cs" />
+    <Compile Include="Controller\CanvasController.cs" />
+    <Compile Include="Controller\MouseController.cs" />
     <Compile Include="InterfaceServices\IPropertyObject.cs" />
     <Compile Include="Model\ShapeProperties\ElementProperties.cs" />
     <Compile Include="Model\ShapeProperties\LineProperties.cs" />

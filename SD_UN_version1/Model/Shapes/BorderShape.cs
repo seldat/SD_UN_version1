@@ -47,6 +47,13 @@ namespace SD_UN_version1.Model.Shapes
             this.location= new Point(x,y);
             this.BorderThickness = new Thickness(1);
             this.BorderBrush = new SolidColorBrush(Colors.Black);
+
+        }
+        public void Move(Point p)
+        {
+            Canvas.SetLeft(this, p.X);
+            Canvas.SetTop(this, p.Y);
+            location = p;
         }
         public Point TopLeft()
         {
