@@ -76,7 +76,7 @@ namespace SD_UN_version1.Controller
             public Action Else { get; set; }
             public Action Debug { get; set; }
         }
-        BaseController controller;
+        CanvasController controller;
         Canvas canvas;
         protected Point LastMousePosition { get; set; }
         protected Point CurrentMousePosition { get; set; }
@@ -94,13 +94,13 @@ namespace SD_UN_version1.Controller
             Point p = Mouse.GetPosition(canvas);
             bp = new Box(canvas) { DisplayRectangle = new BorderShape(new Point(20, 20)) };
             router = new List<MouseRouter>();
-            controller = new BaseController(canvas);
+            controller = new CanvasController(canvas);
             controller.AddElement(bp);
+           controller.SelectElement(bp);
             canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args));
             canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args));
             canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args));
             canvas.MouseLeftButtonDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDoubleClick, args));
-            bp = new Box(canvas) { DisplayRectangle = new BorderShape(new Point(20, 20)) };
             bp.Draw();
             InitializeBehavior();
         }
@@ -111,7 +111,7 @@ namespace SD_UN_version1.Controller
         protected virtual void HandleEvent(MouseAction action)
         {
             //Trace.WriteLine("Route:HandleEvent:" + CurrentButtons.ToString());
-            CurrentMousePosition = action.MousePosition;
+            CurrentMousePosition = action.MouseEventArgs.GetPosition(canvas);
            // CurrentButtons = Control.MouseButtons;
             // Issue #39: Mouse Move event fires even for button press when mouse hasn't moved!
             IEnumerable<MouseRouter> routes = router.Where(r => (action.MouseEvent != MouseEvent.MouseMove && r.MouseEvent == action.MouseEvent)
@@ -119,7 +119,7 @@ namespace SD_UN_version1.Controller
 
             routes.ForEach(r =>
             {
-                Trace.WriteLine("Route:Executing Route:" + r.RouteName.ToString());
+                Trace.WriteLine("Route:Executing Route:" + r.RouteName.ToString() + "  "+CurrentMousePosition.ToString());
                 r.Debug?.Invoke();
 
                 // Test condition every time after executing a route handler, as the handler may change state for the next condition.
@@ -152,14 +152,23 @@ namespace SD_UN_version1.Controller
             {
                 RouteName = RouteName.DragShapes,
                 MouseEvent = MouseEvent.MouseMove,
-                Condition = () => DraggingShapes &&
-                    HoverShape != null &&
-                    HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
-                Action = (_) =>
+                Condition = () =>true,
+                Action = (mouseEventArgs) =>
                 {
+                   // MessageBox.Show("ssss");
                     DragShapes();
                     DraggingOccurred = true;
                 },
+            });
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.SelectSingleShapeMouseDown,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                    !controller.IsChildShapeSelectable(CurrentMousePosition) &&
+                    !controller.IsMultiSelect() &&
+                    !controller.SelectedElements.Contains(controller.GetRootShapeAt(CurrentMousePosition)),
+                Action = (_) => SelectSingleRootShape()
             });
         }
         protected void DragShapes()
@@ -181,8 +190,32 @@ namespace SD_UN_version1.Controller
             }*/
             //else
             {
-                controller.DragSelectedElements(delta);
+                
+                controller.DragSelectedElements(CurrentMousePosition);
                // controller.SnapController.UpdateRunningDelta(delta);
+            }
+        }
+        protected void SelectSingleRootShape()
+        {
+            // Preserve for undo:
+            List<GraphicElement> selectedShapes = controller.SelectedElements.ToList();
+            GraphicElement el = controller.GetRootShapeAt(CurrentMousePosition);
+            if (selectedShapes.Count != 1 || !selectedShapes.Contains(el))
+            {
+
+                controller.DeselectCurrentSelectedElements();
+                controller.SelectElement(el);
+                /* controller.UndoStack.UndoRedo("Select Root " + el.ToString(),
+                     () =>
+                     {
+                         controller.DeselectCurrentSelectedElements();
+                         controller.SelectElement(el);
+                     },
+                     () =>
+                     {
+                         controller.DeselectCurrentSelectedElements();
+                         controller.SelectElements(selectedShapes);
+                     });*/
             }
         }
     }

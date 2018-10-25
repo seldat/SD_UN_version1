@@ -23,7 +23,7 @@ namespace SD_UN_version1.Model
         //public ContentAlignment TextAlign { get; set; }
         public BorderShape DisplayRectangle { get; set; }
         // TODO: Text location - left, top, right, middle, bottom
-
+        public virtual bool Selected { get; protected set; }
         protected bool HasCornerAnchors { get; set; }
         protected bool HasCenterAnchors { get; set; }
         protected bool HasLeftRightAnchors { get; set; }
@@ -118,6 +118,15 @@ namespace SD_UN_version1.Model
 
             return anchors;
         }
+        public virtual void Select()
+        {
+            Selected = true;
+        }
+
+        public virtual void Deselect()
+        {
+            Selected = false;
+        }
         public virtual bool IsSelectable(Point p)
         {
             return DisplayRectangle.Contain(p);
@@ -151,8 +160,11 @@ namespace SD_UN_version1.Model
         }
         public virtual void Draw()
         {
-
+             DrawSelection();
+            
         }
+
+
         public virtual void Move(Point delta)
         {
             DisplayRectangle.Move(delta);
@@ -161,7 +173,7 @@ namespace SD_UN_version1.Model
         {
             if (!isSelected)
             {
-                DisplayRectangle.BorderBrush = selectionPen;
+                DisplayRectangle.BorderBrush = new SolidColorBrush(Colors.Black);
             }
             else
             {

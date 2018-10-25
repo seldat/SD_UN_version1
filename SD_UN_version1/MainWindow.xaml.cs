@@ -42,5 +42,11 @@ namespace SD_UN_version1
             
           
         }
+
+        private void canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+           
+
+        }
     }
 }
